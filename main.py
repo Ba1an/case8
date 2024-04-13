@@ -33,7 +33,18 @@ class Room:
                         all_available.append(self.numbers[i])
         return all_available
 
-
+    def max_price_room(self, available_rooms, max_price_per_person, num_people):
+        final_prices = []
+        for i in available_rooms:
+            if self.base_prices[i] / num_people + 1000 <= max_price_per_person:
+                final_prices.append(self.base_prices + 1000 * num_people)
+            elif self.base_prices[i] / num_people + 280 <= max_price_per_person:
+                final_prices.append(self.base_prices + 280 * num_people)
+            else:
+                final_prices.append(self.base_prices)
+        max_price = max(final_prices)
+        chosen_room = available_rooms[final_prices.index(max_price)]
+        return chosen_room, max_price
 
 
 class Booking:
