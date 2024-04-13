@@ -1,3 +1,5 @@
+import random
+
 class Room:
     def __init__(self, path_1):
         self.numbers = []
@@ -47,6 +49,12 @@ class Booking:
 
     def reservation_dates(self):
         return [x for x in range(self.check_in_date, self.check_in_date + self.num_nights)]
+
+    def will_they(self):
+        will_he = random.randint(1, 4)
+        if will_he == 1:
+            return False
+        return True
 
 rooms = Room('fund.txt')
 
