@@ -1,58 +1,57 @@
 class Room:
-    def __init__(self, number, room_type, capacity, comfort_level):
-        self.number = number
-        self.room_type = room_type
-        self.capacity = capacity
-        self.comfort_level = comfort_level
-        self.base_price = self.get_price()
-        self.is_occupied = False
+    def __init__(self, path_1):
+        self.numbers = []
+        self.room_types = []
+        self.capacities = []
+        self.comfort_levels = []
+        self.base_prices = []
+        self.are_occupied = []
+        with open(path_1, 'r', encoding='utf8') as f1:
+            numbers_data = f1.readlines()
+        for number in numbers_data:
+            number_data = number.split()
+            self.numbers.append(number_data[0])
+            self.room_types.append(number_data[1])
+            self.capacities.append(number_data[2])
+            self.comfort_levels.append(number_data[3])
+            self.are_occupied.append([])
+            self.base_prices.append(self.get_price(number_data[1], number_data[3]))
 
-    def get_price(self):
+    def get_price(self, type_r, comfort_r):
         prices = {'одноместный': 2900, 'двухместный': 2300, 'полулюкс': 3200, 'люкс': 4100}
-        comfort_ind = {'стандарт': 1.0, 'стандарт улучшенный': 1.2, 'апартамент': 1.5}
-        return prices[self.room_type] * comfort_ind[self.comfort_level]/ self.capacity
+        comfort_ind = {'стандарт': 1.0, 'стандарт_улучшенный': 1.2, 'апартамент': 1.5}
+        return prices[type_r] * comfort_ind[comfort_r]
+
+    def find_other_rooms(self, days_to_book, max_price_per_person, num_people):
+        all_available = []
+        for i in range(len(self.numbers)):
+            if max_price_per_person >= (self.base_prices[i] * 0.7):
+                if num_people < self.capacities[i]:
+                    if all(day not in self.are_occupied[i] for day in days_to_book):
+                        all_available.append(self.numbers[i])
+        return all_available
+
+
+
 
 class Booking:
-    def __init__(self, date, surname, name, patronymic, num_people, check_in_date, num_nights, max_price_per_person):
-        self.date = date
-        self.surname = surname
-        self.name = name
-        self.patronymic = patronymic
-        self.num_people = num_people
-        self.check_in_date = check_in_date
-        self.num_nights = num_nights
-        self.max_price_per_person = max_price_per_person
+    def __init__(self, reservation_data):
+        self.date = reservation_data[0]
+        self.surname = reservation_data[1]
+        self.name = reservation_data[2]
+        self.patronymic = reservation_data[3]
+        self.num_people = reservation_data[4]
+        self.check_in_date = int(reservation_data[5][:2])
+        self.num_nights = int(reservation_data[6])
+        self.max_price_per_person = float(reservation_data[7])
 
-class Hotel:
-    def __init__(self):
-        self.rooms = []
-        self.bookings = []
+    def reservation_dates(self):
+        return [x for x in range(self.check_in_date, self.check_in_date + self.num_nights)]
 
-    def add_room(self, room):
-        self.rooms.append(room)
+rooms = Room('fund.txt')
 
-    def add_booking(self, booking):
-        self.bookings.append(booking)
-
-    def find_available_rooms(self, check_in_date, num_nights, num_people, max_price_per_person):
-        available_rooms = []
-        for room in self.rooms:
-            if not room.is_occupied and room.capacity >= num_people and room.get_price() <= max_price_per_person:
-                available_rooms.append(room)
-        return available_rooms
-
-    def book_room(self, room, booking):
-        room.is_occupied = True
-        print(f'Room {room.number} has been booked for {booking.num_nights} nights.')
-
-    def process_bookings(self):
-        for booking in self.bookings:
-            available_rooms = self.find_available_rooms(booking.check_in_date, booking.num_nights,
-                                                        booking.num_people, booking.max_price_per_person)
-            if available_rooms:
-                optimal_room = self.find_optimal_room(available_rooms)
-                self.book_room(optimal_room, booking)
-            else:
-                print("No available rooms for booking.")
-
-    def find_optimal_room(self, available_rooms): !
+with open('booking.txt', 'r', encoding='utf8') as f2:
+    for line in f2:
+        reservation = line.split()
+        booking = Booking(reservation)
+        reserved_dates = booking.reservation_dates()
