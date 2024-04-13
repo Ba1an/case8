@@ -22,6 +22,39 @@ class Room:
         comfort_ind = {'стандарт': 1.0, 'стандарт_улучшенный': 1.2, 'апартамент': 1.5}
         return prices[type_r] * comfort_ind[comfort_r]
 
+    def find_available_room(self, days_to_book, max_price_per_person, num_people):
+        all_available = []
+        for i in range(len(self.numbers)):
+            if max_price_per_person * num_people >= self.base_prices[i]:
+                if num_people == self.capacities[i]:
+                    if all(day not in self.are_occupied[i] for day in days_to_book):
+                        all_available.append(self.numbers[i])
+        return all_available
+
+    def find_other_rooms(self, days_to_book, max_price_per_person, num_people):
+        all_available = []
+        for i in range(len(self.numbers)):
+            if max_price_per_person >= (self.base_prices[i] * 0.7):
+                if num_people < self.capacities[i]:
+                    if all(day not in self.are_occupied[i] for day in days_to_book):
+                        all_available.append(self.numbers[i])
+        return all_available
+
+    def max_price_room(self, available_rooms, max_price_per_person, num_people):
+        final_prices = []
+        for i in available_rooms:
+            if self.base_prices[i] / num_people + 1000 <= max_price_per_person:
+                final_prices.append(self.base_prices + 1000 * num_people)
+            elif self.base_prices[i] / num_people + 280 <= max_price_per_person:
+                final_prices.append(self.base_prices + 280 * num_people)
+            else:
+                final_prices.append(self.base_prices)
+        max_price = max(final_prices)
+        chosen_room = available_rooms[final_prices.index(max_price)]
+        return chosen_room, max_price
+
+
+
 
 class Booking:
     def __init__(self, reservation_data):
