@@ -31,10 +31,11 @@ class Booking:
         self.patronymic = reservation_data[3]
         self.num_people = reservation_data[4]
         self.check_in_date = int(reservation_data[5][:2])
-        self.num_nights = reservation_data[6]
-        self.max_price_per_person = reservation_data[7]
+        self.num_nights = int(reservation_data[6])
+        self.max_price_per_person = float(reservation_data[7])
 
-    def find_reservation(self):
+    def reservation_dates(self):
+        return [x for x in range(self.check_in_date, self.check_in_date + self.num_nights)]
 
 
 
@@ -46,10 +47,10 @@ class Booking:
 rooms = Room('fund.txt')
 
 with open('booking.txt', 'r', encoding='utf8') as f2:
-    b = True
-    while b:
-        reservation = f2.readline()
-        if reservation == '':
-            b = False
-        else:
-            reservation = reservation.split()
+    for line in f2:
+        reservation = line.split()
+        booking = Booking(reservation)
+        reserved_dates = booking.reservation_dates()
+
+
+
