@@ -32,6 +32,8 @@ class Room:
                 if num_people == self.capacities[i]:
                     if all(day not in self.are_occupied[i] for day in days_to_book):
                         all_available.append(self.numbers[i])
+        if not all_available:
+            all_available = self.find_other_rooms(days_to_book, max_price_per_person, num_people)
         return all_available
 
     def find_other_rooms(self, days_to_book, max_price_per_person, num_people):
@@ -56,6 +58,9 @@ class Room:
         max_price = max(final_prices)
         chosen_room = available_rooms[final_prices.index(max_price)]
         return chosen_room, max_price
+
+    def add_booking(self, room, dates):
+        self.are_occupied[int(room) - 1].extend(dates)
 
 
 
@@ -106,17 +111,15 @@ with open('booking.txt', 'r', encoding='utf8') as f2:
         booking = Booking(reservation)
         reserved_dates = booking.reservation_dates()
         av_r = rooms.find_available_room(reserved_dates, booking.max_price_per_person, booking.num_people)
-        print('av_r=', av_r)
         if av_r:
             r, p = rooms.max_price_room(av_r, booking.max_price_per_person, booking.num_people)
-            booking.earned(p)
-
-        else:
-            oth_r = rooms.find_other_rooms(reserved_dates, booking.max_price_per_person, booking.num_people)
-            if oth_r:
-                r, p = rooms.max_price_room(oth_r, booking.max_price_per_person, booking.num_people)
+            rooms.add_booking(r, reserved_dates)
+            if booking.will_they():
+                booking.earned(p)
             else:
                 booking.lost()
+        else:
+            booking.lost()
 
 
 
