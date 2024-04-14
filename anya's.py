@@ -70,6 +70,8 @@ class Booking:
         self.check_in_date = int(reservation_data[5][:2])
         self.num_nights = int(reservation_data[6])
         self.max_price_per_person = float(reservation_data[7])
+        self.earned_money = [0] * 31
+        self.lost_money = [0] * 31
 
     def reservation_dates(self):
         return [x for x in range(self.check_in_date, self.check_in_date + self.num_nights)]
@@ -79,6 +81,18 @@ class Booking:
         if will_he == 1:
             return False
         return True
+
+    def lost(self):
+        for i in self.reservation_dates():
+            self.lost_money[int(i)-1] += self.num_people * self.max_price_per_person
+
+    def earned(self, price):
+        for i in self.reservation_dates():
+            self.earned_money[int(i)-1] += price
+
+
+
+
 
 
 
@@ -99,7 +113,15 @@ with open('booking.txt', 'r', encoding='utf8') as f2:
         print('av_r=', av_r)
         if av_r:
             r, p = rooms.max_price_room(av_r, booking.max_price_per_person, booking.num_people)
-            print('room=', r, p)
+            booking.earned(p)
+
+        else:
+            oth_r = rooms.find_other_rooms(reserved_dates, booking.max_price_per_person, booking.num_people)
+            if oth_r:
+                r, p = rooms.max_price_room(oth_r, booking.max_price_per_person, booking.num_people)
+            else:
+                booking.lost()
+
 
 
 
