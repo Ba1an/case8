@@ -96,11 +96,6 @@ class Booking:
 
 
 
-
-
-
-
-
 rooms = Room('fund.txt')
 
 with open('booking.txt', 'r', encoding='utf8') as f2:

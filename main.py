@@ -55,6 +55,9 @@ class Room:
         chosen_room = available_rooms[final_prices.index(max_price)]
         return chosen_room, max_price
 
+    def add_booking(self, room, dates):
+        self.are_occupied[int(room) - 1].extend(dates)
+
 
 class Booking:
     def __init__(self, reservation_data):
