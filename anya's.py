@@ -89,6 +89,7 @@ class Booking:
     def earned(self, price):
         for i in self.reservation_dates():
             self.earned_money[int(i)-1] += price
+            print('')
 
 
 
