@@ -24,11 +24,20 @@ class Room:
         comfort_ind = {'стандарт': 1.0, 'стандарт_улучшенный': 1.2, 'апартамент': 1.5}
         return prices[type_r] * comfort_ind[comfort_r]
 
+    def find_available_room(self, days_to_book, max_price_per_person, num_people):
+        all_available = []
+        for i in range(len(self.numbers)):
+            if max_price_per_person * num_people >= self.base_prices[i]:
+                if num_people == self.capacities[i]:
+                    if all(day not in self.are_occupied[i] for day in days_to_book):
+                        all_available.append(self.numbers[i])
+        return all_available
+
     def find_other_rooms(self, days_to_book, max_price_per_person, num_people):
         all_available = []
         for i in range(len(self.numbers)):
             if max_price_per_person * num_people >= (self.base_prices[i] * 0.7):
-                if num_people < self.capacities[i]:
+                if num_people + 1 == self.capacities[i]:
                     if all(day not in self.are_occupied[i] for day in days_to_book):
                         all_available.append(self.numbers[i])
         return all_available
