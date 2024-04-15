@@ -127,3 +127,19 @@ with open('booked.txt', 'w', encoding='utf8') as f_b:
         print('потеряли=', booking.lost_money)
         print('заработали=',booking.earned_money)
 
+
+with open('analytics.txt', 'w', encoding='utf8') as f_a:
+    types = {'одноместный': 0, 'двухместный': 0, 'полулюкс': 0, 'люкс': 0}
+    for i in range(1, 31):
+        rooms_book = 0
+        rooms_free = 0
+        for x in range(len(rooms.are_occupied)):
+            if i in rooms.are_occupied[x]:
+                rooms_book += 1
+
+            else:
+                rooms_free += 1
+        print('день', i, 'занято', rooms_book, ':  свободно', rooms_free)
+        print('занятость номеров', types)
+
+
