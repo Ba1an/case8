@@ -140,14 +140,12 @@ with open('analytics.txt', 'w', encoding='utf8') as f_a:
                 types[rooms.room_types[x]] += 1
             else:
                 rooms_free += 1
-        print('день', i, 'занято', rooms_book, ':  свободно', rooms_free, file=f_a)
-        print('занятость номеров', types, file=f_a)
-        print(f'одноместные номера заняты на {(types['одноместный'] * 100)//all_rooms['одноместный']}%, '
-              f'двухместные номера заняты на {(types['двухместный'] * 100)//all_rooms['двухместный']}%, '
-              f'полулюксовые номера заняты на {(types['полулюкс'] * 100)//all_rooms['полулюкс']}%, '
-              f'люксовые номера заняты на {(types['люкс'] * 100)//all_rooms['люкс']}%', file=f_a)
-        print(f'Гостинница загружена на {(types['одноместный'] +types['двухместный'] + types['полулюкс'] + types['люкс'])*100
-                                         //len(rooms.are_occupied)}%', file=f_a)
+        print('день', i, 'занято', rooms_book, ': свободно', rooms_free, file=f_a)
+        print(f"одноместные номера заняты на {(types['одноместный'] * 100)//all_rooms['одноместный']}%, "
+              f"двухместные номера заняты на {(types['двухместный'] * 100)//all_rooms['двухместный']}%, "
+              f"полулюксовые номера заняты на {(types['полулюкс'] * 100)//all_rooms['полулюкс']}%, "
+              f"люксовые номера заняты на {(types['люкс'] * 100)//all_rooms['люкс']}%", file=f_a)
+        print(f"Гостинница загружена на {(types['одноместный'] +types['двухместный'] + types['полулюкс'] + types['люкс'])*100//len(rooms.are_occupied)}%", file=f_a)
         print('Потеряли за день', booking.lost_money[i-1], file=f_a)
         print('Заработали за день', booking.earned_money[i-1], file=f_a)
         print('', file=f_a)

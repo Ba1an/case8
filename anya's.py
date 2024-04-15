@@ -121,7 +121,3 @@ with open('booking.txt', 'r', encoding='utf8') as f2:
         else:
             booking.lost()
 
-
-
-
-
