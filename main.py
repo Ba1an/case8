@@ -129,7 +129,6 @@ with open('analytics.txt', 'w', encoding='utf8') as f_a:
         for key in all_rooms.keys():
             if kind == key:
                 all_rooms[key] += 1
-    print(all_rooms)
 
     for i in range(1, 31):
         types = {'одноместный': 0, 'двухместный': 0, 'полулюкс': 0, 'люкс': 0}
@@ -141,7 +140,6 @@ with open('analytics.txt', 'w', encoding='utf8') as f_a:
                 types[rooms.room_types[x]] += 1
             else:
                 rooms_free += 1
-        print()
         print('день', i, 'занято', rooms_book, ':  свободно', rooms_free, file=f_a)
         print('занятость номеров', types, file=f_a)
         print(f'одноместные номера заняты на {(types['одноместный'] * 100)//all_rooms['одноместный']}%, '
@@ -150,5 +148,8 @@ with open('analytics.txt', 'w', encoding='utf8') as f_a:
               f'люксовые номера заняты на {(types['люкс'] * 100)//all_rooms['люкс']}%', file=f_a)
         print(f'Гостинница загружена на {(types['одноместный'] +types['двухместный'] + types['полулюкс'] + types['люкс'])*100
                                          //len(rooms.are_occupied)}%', file=f_a)
+        print('Потеряли за день', booking.lost_money[i-1], file=f_a)
+        print('Заработали за день', booking.earned_money[i-1], file=f_a)
+        print('', file=f_a)
 
 
