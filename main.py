@@ -108,38 +108,47 @@ with open('booked.txt', 'w', encoding='utf8') as f_b:
             av_r = rooms.find_available_room(reserved_dates, booking.max_price_per_person, booking.num_people)
             if av_r:
                 r, p = rooms.max_price_room(av_r, booking.max_price_per_person, booking.num_people)
-                print(f'{booking.date}, комната номер {r}, была забронирована {booking.surname} {booking.name} '
-                      f'{booking.patronymic} на период c {booking.check_in_date} до '
-                      f'{booking.check_in_date + booking.num_nights - 1} числа.', file=f_b)
-                rooms.add_booking(r, reserved_dates)
                 res = booking.will_they()
                 if res:
+                    print(f'{booking.date}, комната номер {r}, была забронирована {booking.surname} {booking.name} '
+                          f'{booking.patronymic} на период c {booking.check_in_date} до '
+                          f'{booking.check_in_date + booking.num_nights - 1} числа.', file=f_b)
+                    rooms.add_booking(r, reserved_dates)
                     booking.earned(p)
-
                 else:
                     booking.lost()
             else:
-                print(f'{booking.date}, не смог забронировать {booking.surname} {booking.name} '
-                      f'{booking.patronymic} комнату на период c {booking.check_in_date} до '
-                      f'{booking.check_in_date + booking.num_nights - 1} числа.')
-                print('мы всё проебали')
                 booking.lost()
         print('потеряли=', booking.lost_money)
-        print('заработали=',booking.earned_money)
+        print('заработали=', booking.earned_money)
 
 
 with open('analytics.txt', 'w', encoding='utf8') as f_a:
-    types = {'одноместный': 0, 'двухместный': 0, 'полулюкс': 0, 'люкс': 0}
+    all_rooms = {'одноместный': 0, 'двухместный': 0, 'полулюкс': 0, 'люкс': 0}
+    for kind in rooms.room_types:
+        for key in all_rooms.keys():
+            if kind == key:
+                all_rooms[key] += 1
+    print(all_rooms)
+
     for i in range(1, 31):
+        types = {'одноместный': 0, 'двухместный': 0, 'полулюкс': 0, 'люкс': 0}
         rooms_book = 0
         rooms_free = 0
         for x in range(len(rooms.are_occupied)):
             if i in rooms.are_occupied[x]:
                 rooms_book += 1
-
+                types[rooms.room_types[x]] += 1
             else:
                 rooms_free += 1
-        print('день', i, 'занято', rooms_book, ':  свободно', rooms_free)
-        print('занятость номеров', types)
+        print()
+        print('день', i, 'занято', rooms_book, ':  свободно', rooms_free, file=f_a)
+        print('занятость номеров', types, file=f_a)
+        print(f'одноместные номера заняты на {(types['одноместный'] * 100)//all_rooms['одноместный']}%, '
+              f'двухместные номера заняты на {(types['двухместный'] * 100)//all_rooms['двухместный']}%, '
+              f'полулюксовые номера заняты на {(types['полулюкс'] * 100)//all_rooms['полулюкс']}%, '
+              f'люксовые номера заняты на {(types['люкс'] * 100)//all_rooms['люкс']}%', file=f_a)
+        print(f'Гостинница загружена на {(types['одноместный'] +types['двухместный'] + types['полулюкс'] + types['люкс'])*100
+                                         //len(rooms.are_occupied)}%', file=f_a)
 
 
